@@ -1,0 +1,323 @@
+<html>
+<head>
+	<title>{{title}}</title>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+	<meta name="viewport" content="user-scalable=no">
+	
+	<style>
+		.button {
+			background-color: #008CBA; /* Green */
+			border: none;
+			height: 40px;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			border-radius: 8px;
+		}
+		.switch {
+		  position: relative;
+		  display: inline-block;
+		  width: 60px;
+		  height: 34px;
+		}
+
+		/* Hide default HTML checkbox */
+		.switch input {display:none;}
+
+		/* The slider */
+		.slider {
+		  position: absolute;
+		  cursor: pointer;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: #ccc;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		.slider:before {
+		  position: absolute;
+		  content: "";
+		  height: 26px;
+		  width: 26px;
+		  left: 4px;
+		  bottom: 4px;
+		  background-color: white;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		input:checked + .slider {
+		  background-color: #2196F3;
+		}
+
+		input:focus + .slider {
+		  box-shadow: 0 0 1px #2196F3;
+		}
+
+		input:checked + .slider:before {
+		  -webkit-transform: translateX(26px);
+		  -ms-transform: translateX(26px);
+		  transform: translateX(26px);
+		}
+
+		/* Rounded sliders */
+		.slider.round {
+		  border-radius: 34px;
+		}
+
+		.slider.round:before {
+		  border-radius: 50%;
+		}
+	</style>
+</head>
+<body>
+	<table border="0" style="width:100%; vertical-align: bottom; border-collapse: collapse; text-align: center;">
+		<tr style="height: 500;" colspan="2" ></tr>
+		<tr style="height: 50; width: 15%;">
+			<td><div>
+				<button onclick="post(false);" class="button" id="endReading"></button>
+				</div>
+				<label>Stop Reading</label></td>
+			<td style="width: 85%"></td>
+		</tr>
+		<tr style="height: 20;">
+			<td colspan="5"></td>
+		</tr>
+	</table>
+	<table border="1" style="width:100%; vertical-align: bottom; border-collapse: collapse; text-align: center;">
+		<tr>
+			<td>
+				<div>
+				<label class="switch">
+				<input type="checkbox" id="readingToggle" onchange="post('nil');" value={{tog_reading}}>
+				<span class="slider"></span>
+				</label>
+				</div>
+				<label>Toggle constant readings</label>
+			</td>
+			<td>
+				<div>
+				<button onclick="post_toggle(true);" class="button" id="toggleOn"></button>
+				</div>
+				<label>Toggle all sensors on</label>
+			</td>
+			<td>
+				<div>
+				<button onclick="post_toggle(false);" class="button" id="toggleOff"></button>
+				</div>
+				<label>Toggle all sensors off</label>
+			</td>
+			<td>
+				<div>
+				<button onclick="post(true);" class="button" id="readingSingle"></button>
+				</div>
+				<label>Take a single reading</label>
+			</td>
+			<td rowspan=2 style="width: 32%"><textarea id="log" style="overflow-y: scroll; max-height: 150; min-height: 150; max-width: 100%; min-width: 100%; resize: none;" disabled></textarea></td>
+		</tr>
+		<tr>
+			<td style="width: 17%">
+				<div>
+				<label class="switch">
+				<input type="checkbox" onchange="post('nil');" id="doToggle" {{tog_do}}>
+				<span class="slider"></span>
+				</label>
+				</div>
+				<label>Toggle {{s1}} sensor</label>
+			</td>
+			<td style="width: 17%">
+				<div>
+				<label class="switch">
+				<input type="checkbox" onchange="post('nil');" id="phToggle" {{tog_ph}}>
+				<span class="slider"></span>
+				</label>
+				</div>
+				<label>Toggle {{s2}} sensor</label>
+			</td>
+			<td style="width: 17%">
+				<div>
+				<label class="switch">
+				<input type="checkbox" onchange="post('nil');" id="orpToggle" {{tog_orp}}>
+				<span class="slider"></span>
+				</label>
+				</div>
+				<label>Toggle {{s3}} sensor</label>
+			</td>
+			<td style="width: 17%">
+				<div>
+				<label class="switch">
+				<input type="checkbox" onchange="post('nil');" id="ecToggle" {{tog_ec}}>
+				<span class="slider"></span>
+				</label>
+				</div>
+				<label>Toggle {{s4}} sensor</label>
+			</td>
+		</tr>
+	</table> 
+	
+	<script type="text/javascript">
+		function post(b){
+			var currentURL = document.URL;
+		
+			var form = document.createElement('form');
+			form.setAttribute("method", "post");
+			form.setAttribute("id", "submitForm");
+			form.setAttribute("action", "/");
+			
+			var tog_reading = document.createElement('input');
+			tog_reading.setAttribute("value", document.getElementById('readingToggle').checked);
+			tog_reading.setAttribute("name", "tog_reading");
+			tog_reading.setAttribute("type", "hidden");
+			
+			var tog_ph = document.createElement('input');
+			tog_ph.setAttribute("value", document.getElementById('phToggle').checked);
+			tog_ph.setAttribute("name", "tog_ph");
+			tog_ph.setAttribute("type", "hidden");
+			
+			var tog_do = document.createElement('input');
+			tog_do.setAttribute("value", document.getElementById('doToggle').checked);
+			tog_do.setAttribute("name", "tog_do");
+			tog_do.setAttribute("type", "hidden");
+			
+			var tog_ec = document.createElement('input');
+			tog_ec.setAttribute("value", document.getElementById('ecToggle').checked);
+			tog_ec.setAttribute("name", "tog_ec");
+			tog_ec.setAttribute("type", "hidden");
+			
+			var tog_orp = document.createElement('input');
+			tog_orp.setAttribute("value", document.getElementById('orpToggle').checked);
+			tog_orp.setAttribute("name", "tog_orp");
+			tog_orp.setAttribute("type", "hidden");
+			
+			var log = document.createElement('input');
+			log.setAttribute("value", b);
+			log.setAttribute("name", "log");
+			log.setAttribute("type", "hidden");
+			
+			form.appendChild(tog_reading);
+			form.appendChild(tog_ph);
+			form.appendChild(tog_do);
+			form.appendChild(tog_ec);
+			form.appendChild(tog_orp);
+			form.appendChild(log);
+			
+			document.body.appendChild(form);
+			
+			var frm = $('#submitForm');			
+			frm.on('submit', function(e){
+				$.ajax({
+					type: frm.attr('method'),
+					url: frm.attr('action'),
+					data: frm.serialize(),
+					dataType: 'json',
+					encode: true
+				}).done(function(data){
+					if(b != 'nil' && b){
+						document.getElementById('log').value += "{{s1}}: " + data.do + " {{s2}}: " + data.ph + " {{s3}}: " + data.orp + " {{s4}}: " + data.ec + "\n";
+					}
+				}).fail(function(data){
+					console.log(data);
+				
+				});
+				e.preventDefault();
+			});		
+			frm.submit();	
+			frm.remove();
+		}
+		
+		function post_toggle(b){
+			var toggle;
+			if(b){
+				toggle = "true";
+				
+			}else{
+				toggle = "";
+			}
+			
+			var form = document.createElement('form');
+			form.setAttribute("method", "post");
+			form.setAttribute("id", "submitForm");
+			form.setAttribute("action", "/");
+			
+			var tog_reading = document.createElement('input');
+			tog_reading.setAttribute("value", document.getElementById("readingToggle"));
+			tog_reading.setAttribute("name", "tog_reading");
+			tog_reading.setAttribute("type", "hidden");
+			
+			var tog_ph = document.createElement('input');
+			tog_ph.setAttribute("value", toggle);
+			tog_ph.setAttribute("name", "tog_ph");
+			tog_ph.setAttribute("type", "hidden");
+			
+			var tog_do = document.createElement('input');
+			tog_do.setAttribute("value", toggle);
+			tog_do.setAttribute("name", "tog_do");
+			tog_do.setAttribute("type", "hidden");
+			
+			var tog_ec = document.createElement('input');
+			tog_ec.setAttribute("value", toggle);
+			tog_ec.setAttribute("name", "tog_ec");
+			tog_ec.setAttribute("type", "hidden");
+			
+			var tog_orp = document.createElement('input');
+			tog_orp.setAttribute("value", toggle);
+			tog_orp.setAttribute("name", "tog_orp");
+			tog_orp.setAttribute("type", "hidden");
+			
+			var log = document.createElement('input');
+			log.setAttribute("value", "nil");
+			log.setAttribute("name", "log");
+			log.setAttribute("type", "hidden");
+			
+			form.appendChild(tog_reading);
+			form.appendChild(tog_ph);
+			form.appendChild(tog_do);
+			form.appendChild(tog_ec);
+			form.appendChild(tog_orp);
+			form.appendChild(log);
+			
+			document.getElementById('phToggle').checked = b;
+			document.getElementById('doToggle').checked = b;
+			document.getElementById('ecToggle').checked = b;
+			document.getElementById('orpToggle').checked = b;
+			
+			document.body.appendChild(form);
+			
+			var frm = $('#submitForm');			
+				frm.on('submit', function(e){
+					e.preventDefault();
+					$.ajax({
+						type: frm.attr('method'),
+						url: frm.attr('action'),
+						data: frm.serialize()			
+					});
+				});		
+			frm.submit();	
+			frm.remove();
+		}
+		
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

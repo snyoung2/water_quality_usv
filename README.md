@@ -61,8 +61,8 @@ to change, the main.py file needs to be edited.
 					 position in relation to the left most sensor. For instance, if the EC sensors was
 					 changed out for a temperature probe, since it's the 4th most probe, change the value
 					 next to the s4 parameter in the tem dictionary from 'EC' to 'TEMP'.
-						- Note: this is purly an asthetic change as the log file does not know what data
-								it is currently recieving.
+	- Note: this is purly an asthetic change as the log file does not know what data
+			it is currently recieving.
 					 
 					 
 					 

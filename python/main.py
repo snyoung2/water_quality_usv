@@ -7,19 +7,36 @@ from threading import Thread
 import json
 from flask import Flask, render_template, request, Response
 
+#Used to set the time between log files 3600 = 1 hour
 interval = 3600
-#running = True
+
+#Global flag for whether or not data logging should be continuous
 continous = False
+
+#Global flag for logging s2
 ph = False
+
+#Global flag for logging s1
 do = False
+
+#Global flag for logging s4
 ec = False
+
+#Global flag for loggin s3
 orp = False
+
+#Used for comparing. If different, log value
 preState = ['','','','','']
+
+#Value which is written to a file
 valueToWrite = ''
+
+#File handler
 f = FileWriter(interval=interval, path="logs")
 
 app = Flask(__name__)
 
+#Values used in the webpages
 tem = {
 	'title': 'RC Boat Interface',
 	'tog_reading': '',
@@ -37,6 +54,7 @@ tem = {
 	's4': 'EC'
 }
 
+#Starts thread which reads from serial and thread which writes to a file
 def main():
 	global running
 	user = ''
@@ -51,12 +69,14 @@ def main():
 	
 	#running = False
 
+#Writes to file once
 def writeToFileS():
 	global f
 	global valueToWrite
 	if(not continous):
 		f.writeFile(parseValue(valueToWrite))
-	
+
+#Writes to file continously
 def writeToFileC():
 	global f
 	global running
@@ -67,6 +87,7 @@ def writeToFileC():
 		#if(not running):
 		#	break
 		
+#Parses input from serial and converts it to a format for the log file
 def parseValue(value):
 	global tem
 	values = value.split(', ')
@@ -131,6 +152,7 @@ def parseValue(value):
 			out+=(', ' + "0")
 	return out
 		
+#Switches all sensors to on
 def changeAllOn():
 	global ph
 	ph = True
@@ -140,7 +162,7 @@ def changeAllOn():
 	ec = True
 	global orp
 	orp = True
-
+#Switches all sensors off
 def changeAllOff():
 	global ph
 	ph = False
@@ -151,26 +173,32 @@ def changeAllOff():
 	global orp
 	orp = False
 
+#Toggles continous data logging
 def toggleContinous():
 	global continous
 	continous = not continous
-	
+
+#Toggles s2 data logging
 def changePh():
 	global ph 
 	ph = not ph
 
+#Toggles s1 data logging
 def changeDo():
 	global do
 	do = not  do
 
+#Toggles s4 data logging
 def changeEc():
 	global ec 
 	ec = not ec
 
+#Toggles s3 data logging
 def changeOrp():
 	global orp 
 	orp = not orp
 	
+#Returns the current state of each sensor and continous data logging. Depreciated.
 def getStates():
 	global ph
 	global do
@@ -179,11 +207,13 @@ def getStates():
 	global orp
 	return ("PH: %s\nDO: %s\nEC: %s\nORP: %s\nContinous: %s" % (ph, do, ec, orp, continous))
 
+#Returns a list of commands. Depreciated.
 def help():
 	return "List of Commands\n\th: Help\n\tr: Logs a reading\n\tton: Toggles all sensors to on\n\ttof: Toggles all sensors to off\n\tph: Toggles " \
 			+"PH sensor\n\tdo: Toggles DO sensor\n\tec: Toggles EC sensor\n\torp: Toggles ORP sensor\n\t"\
 			+"g: Displays the state of all sensors\n\tq: Quits program\n"
 			
+#Gets input from arduino over serial
 def input():
     global valueToWrite
 
@@ -207,6 +237,8 @@ def input():
 				out+=buffer
 
     print("Serial Closed")
+	
+#Artifically generates values for each sensor. Depreciated.
 '''
 def input():
 	global valueToWrite
@@ -217,6 +249,8 @@ def input():
 		valueToWrite = generateValue()
 		t.sleep(3)
 '''
+
+#Generates fake values for each sensor. Used in testing output without arduino. Depreciated.
 def generateValue():
 	value = ''
 	value += str(random.randint(10, 30) * 0.2)

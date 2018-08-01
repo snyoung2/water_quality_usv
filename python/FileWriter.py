@@ -2,8 +2,11 @@ import time as t				#FileWriter
 import os
 from threading import Thread
 
+#Class responsible for taking an input and writing it to a file
 class FileWriter():
-
+	
+	#Initalizes the FileWriter object with a set interval to generate files at
+	#and a path to write said files at
 	def __init__(self, interval = 3600, path=None):
 		self.interval = interval
 		self.currentFile = ""
@@ -40,11 +43,14 @@ class FileWriter():
 			print("Unable to start thread")
 
 		t.start()
+	
+	#Outputs to a file given an input value
 	def writeFile(self, valueToWrite):
 		fileWrite = ("%s, %s\n" % (abs(self.timeCur - self.timeStart), valueToWrite))
 		self.f.write(fileWrite)
 		t.sleep(0.1)
 
+	#Determines whether or not a new file should be generated and generates a new file based on this
 	def openFile(self):
 		self.timeStart = self.splitTime()[6]
 		openNew = False
@@ -62,12 +68,15 @@ class FileWriter():
 				self.f.close()
 				openNew = True
 
+	#Closes current file
 	def end(self):
 		self.f.close()
 
+	#Gets the current time
 	def getTime(self):
 		return t.strftime("%m-%d-%Y %H-%M-%S", t.localtime())
 
+	#Splits the time into it's components
 	def splitTime(self):
 		list = []
 		time = self.getTime()
@@ -77,8 +86,10 @@ class FileWriter():
 		list.append(t.time())
 		return list
 		
+#Utility class used for the output file
 class LogFile():
 	
+	#Initializes the LogFile object. 
 	def __init__(self, name):
 		self.dateTime = []
 		self.name = name

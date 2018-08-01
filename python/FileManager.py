@@ -1,3 +1,8 @@
+#Is not used but will parse the log files into a graph if implemented correctly.
+#Example a the bottom of the file
+
+
+
 import sys						#FileReader
 import os
 import time as t
@@ -198,7 +203,7 @@ class Plotter():
 		plt.xlim(6000, 8000)
 		plt.show()
 		
-		
+'''
 f = FileReader()
 z = f.readValues(f.getFiles("logs/03-26-2018")[0])
 #for x in f.values[0]:
